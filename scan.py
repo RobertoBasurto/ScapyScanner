@@ -3,7 +3,11 @@
 import argparse
 import os
 import random
-#from scapy.all import *
+import scapy
+from scapy.all import *
+import time
+import sys
+from io import StringIO
 
 aport = 0
 bport = 0
@@ -25,7 +29,8 @@ def rparse(r):
             #check if b is valid number
             if b.isnumeric() and 0<=int(b)<=65535:
                 bport = int(b)
-                return(aport,bport)
+                n=(aport,bport)
+                return(makearray(n))
             else:
                 return("Make sure to have correct format")
         #check if in a- format
@@ -34,14 +39,16 @@ def rparse(r):
             #check if a is valid number
             if a.isnumeric() and 0<=int(a)<=65535:
                 aport = int(a)
-                return(aport,bport)
+                n=(aport,bport)
+                return(makearray(n))
             else:
                 return("Make sure to have correct format")
         #must be in a-b format. check if valid
         if a.strip().isnumeric() and 0<=int(b)<=65535 and int(a)<int(b) and 0<=int(b)<=65535 and b.strip().isnumeric():
             aport = a
             bport = b
-            return(aport,bport)
+            n = (aport,bport)
+            return(makearray(n))
         else:
             return("Make sure to have correct format")
     #if singleport
@@ -52,8 +59,8 @@ def rparse(r):
         return("Make sure to have correct format")
 
 #parse inputted spoofed src ip address. only valid input = xxx.xxx.xxx.xxx; xxx is between 0-255
-def srcparse(src):
-    a,b,c,d = [src.split(".")[i].strip() for i in range(4)]
+def ipparse(ip):
+    a,b,c,d = [ip.split(".")[i].strip() for i in range(4)]
     #check if any quad is an empty string
     if not a or not b or not c or not d:
         return("Make sure to have correct format")
@@ -61,12 +68,19 @@ def srcparse(src):
     if a.isnumeric() and b.isnumeric() and c.isnumeric() and d.isnumeric():
         #check if all in valid range
         if 0<=int(a)<=255 and 0<=int(b)<=255 and 0<=int(c)<=255 and 0<=int(d)<=255:
-            src = "{}.{}.{}.{}".format(a,b,c,d)
-            return("valid")
+            ip = "{}.{}.{}.{}".format(a,b,c,d)
+            return(ip)
         else:
             return("Make sure to have correct format")
     else:
         return("Make sure to have correct format")
+
+#make an array of ints when range is valid
+def makearray(r):
+    ran=[]
+    for i in range(int(r[0]),int(r[1])+1):
+        ran.append(i)
+    return ran
 
 #psuedo-randomly generated MAC address
 def randmac():
@@ -102,18 +116,49 @@ def randipv6():
             ip = ip[:-1]
             ip = ip[:-(len(ip)-ip.rindex(":"))] + ":0:"
 
+def catch_and_release(pakt):
+    #catch stdout from Scapy's summary function
+    old = sys.stdout
+    result = StringIO()
+    sys.stdout = result
+    pakt.summary()
+    sys.stdout = old
+    answers = result.getvalue()
 
+    #manipulate answers to print out prettier
+    open_ports=[]
+    enter=0
+    packets = answers.split("\n")
+    print("="*75)
+    print("="*10 + "HERE ARE THE PORTS THAT RESPONDED WITH A SYN-ACK PACKET" + "="*10)
+    print("="*75)
+    print("="*5 + "Open Ports//Services" + "="*5)
+    for i in packets:
+        if "SA" in i:
+            tmp=i.split(":")[-2].strip()
+            print("> " + tmp[:tmp.index(" ")])
 
 
 
 parser = argparse.ArgumentParser()
 parser.add_argument("dest",help="Destination IP address;quad-dotted notation")
+parser.add_argument("iface",help="network interface to use")
 parser.add_argument("-r","--range",help="port range",nargs="?",default="0-65535",metavar="range")
 parser.add_argument("-s","--source",help="spoof source IP address;quad-dotted notation")
-parser.add_argument("-t","--tcp",help="tcp scan",action="store_true")
+#parser.add_argument("-i","--icmp",help="ping",action="store_true")
 parser.add_argument("-x","--stealth",help="stealth tcp scan",action="store_true")
 args = parser.parse_args()
+start = time.time()
+if(args.stealth):
+    print("STEALTH MODE NOT AVAILABLE YET")
+    sys.exit()
 
-print(randmac())
-print(randipv4())
-print(randipv6())
+#check if range is valid
+rangearr=rparse(args.range)
+#check if ip is valid
+ipparse(args.dest)
+
+pkt=ans,unans=sr(IP(dst=args.dest)/TCP(dport=rangearr,flags='S',seq=100),iface=args.iface,timeout=1,verbose=0)
+catch_and_release(ans)
+print("="*5 + "TIME ELAPSED: " + str(round((time.time()-start),3))+"s"+"="*5)
+

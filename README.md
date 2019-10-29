@@ -6,7 +6,7 @@ To run this scanner you would first need to satisfy some requirments:
 
 1.  __Installing Scapy__
 
-    ```$ git clone https://github,com/secdev/scapy.git```
+    ```$ git clone https://github.com/secdev/scapy.git```
 
 2.  __Know the wireless interface you would like to use__
 

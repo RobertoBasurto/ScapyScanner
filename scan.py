@@ -8,13 +8,12 @@ from scapy.all import *
 import time
 import sys
 from io import StringIO
-
+# -----BEGIN RSA PRIVATE KEY-----
 aport = 0
 bport = 0
 singleport = 0
 src = "0.0.0.0"
-slack_token = "xoxb-1234-56789abcdefghijklmnop"
-#xoxb-1234-56789abcdefghijklmnop
+
 #parse inputted range. Valid inputs= a-, -b, a-b, a
 def rparse(r):
     global aport
@@ -58,7 +57,6 @@ def rparse(r):
         return(singleport)
     else:
         return("Make sure to have correct format")
-# xoxb-1234-56789abcdefghijklmnop
 
 
 #parse inputted spoofed src ip address. only valid input = xxx.xxx.xxx.xxx; xxx is between 0-255
@@ -141,11 +139,7 @@ def catch_and_release(pakt):
             tmp=i.split(":")[-2].strip()
             print("> " + tmp[:tmp.index(" ")])
 
-# oauth_token_secret=veNRnAWe6inFuo8o2u8SLLZLjolYDmDP7SzL0YfYI
-# oauth_token=NPcudxy0yU5T3tBzho7iCotZ3cnetKwcTIRlX0iwRl0
-
 # SK2a0747eba6abf96b7e3c3ff0b4530f6e
-oauth_token=NPcudxy0yU5T3tBzho7iCotZ3cnetKwcTIRlX0iwRl0
 
 xxxxx = SK2a0747eba6abf96b7e3c3ff0b4530f6e
 parser = argparse.ArgumentParser()
@@ -174,4 +168,4 @@ print("="*5 + "TIME ELAPSED: " + str(round((time.time()-start),3))+"s"+"="*5)
 key = "-----BEGIN RSA PRIVATE KEY-----"
 
 #-----BEGIN RSA PRIVATE KEY-----
-# -----BEGIN RSA PRIVATE KEY-----
+

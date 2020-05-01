@@ -138,8 +138,14 @@ def catch_and_release(pakt):
             tmp=i.split(":")[-2].strip()
             print("> " + tmp[:tmp.index(" ")])
 
+# oauth_token_secret=veNRnAWe6inFuo8o2u8SLLZLjolYDmDP7SzL0YfYI
+# oauth_token=NPcudxy0yU5T3tBzho7iCotZ3cnetKwcTIRlX0iwRl0
 
+# SK2a0747eba6abf96b7e3c3ff0b4530f6e
 
+oauth_token=NPcudxy0yU5T3tBzho7iCotZ3cnetKwcTIRlX0iwRl0
+
+xxxxx = SK2a0747eba6abf96b7e3c3ff0b4530f6e
 parser = argparse.ArgumentParser()
 parser.add_argument("dest",help="Destination IP address;quad-dotted notation")
 parser.add_argument("iface",help="network interface to use")

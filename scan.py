@@ -13,7 +13,8 @@ aport = 0
 bport = 0
 singleport = 0
 src = "0.0.0.0"
-
+slack_token = "xoxb-1234-56789abcdefghijklmnop"
+#xoxb-1234-56789abcdefghijklmnop
 #parse inputted range. Valid inputs= a-, -b, a-b, a
 def rparse(r):
     global aport
@@ -57,6 +58,8 @@ def rparse(r):
         return(singleport)
     else:
         return("Make sure to have correct format")
+# xoxb-1234-56789abcdefghijklmnop
+
 
 #parse inputted spoofed src ip address. only valid input = xxx.xxx.xxx.xxx; xxx is between 0-255
 def ipparse(ip):
